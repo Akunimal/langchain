@@ -86,7 +86,7 @@ class RustChainTool(BaseTool):
         ```
 
     Invocation:
-        ``tool.invoke({"command": "get_node_health"})`` or directly call the
+        ``tool.invoke({"method": "get_node_health"})`` or directly call the
         public methods: ``check_balance``, ``list_bounties``,
         ``get_node_health``, ``get_current_epoch``.
     """
@@ -119,7 +119,9 @@ class RustChainTool(BaseTool):
         """Return the current RustChain epoch and slot."""
         return _get("/epoch")
 
-    def _run(self, tool_input: str | dict[str, Any], run_manager: CallbackManagerForToolRun | None = None) -> str:
+    def _run(self, tool_input: str | dict[str, Any] | None = None, run_manager: CallbackManagerForToolRun | None = None, **kwargs: Any) -> str:
+        if tool_input is None:  # dict input arrives unpacked as kwargs
+            tool_input = kwargs
         if isinstance(tool_input, str):
             try:
                 tool_input = json.loads(tool_input)
